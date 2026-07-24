@@ -1,9 +1,11 @@
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../utils/ApiError.js";
 
+//If route is not found, create a new ApiError and pass it to the error handler
 export const notFound = (req,res,next) => {
     next(new ApiError(404,`Route not found: ${req.method} ${req.originalUrl}`)) 
 };
 
+//This is the global error handler for the application
 export const errorHandler = (err,req,res,next) => {
 
     let statusCode = err.statusCode || 500;
@@ -22,15 +24,15 @@ export const errorHandler = (err,req,res,next) => {
     //Mongoose Schema validation
     if(err.name==="ValidationError"){
         statusCode=400;
-        message=Object.values(err.erros).map((e)=>e.message).join(", ");
+        message=Object.values(err.errors).map((e)=>e.message).join(", ");
     }
-    if(process.env.Node_ENV !== "production" && statusCode===500){
+    if(process.env.NODE_ENV !== "production" && statusCode===500){
         console.error(err);
     }
     res.status(statusCode).json({
         success: false,
         message,
-        ...(process.env.Node_ENV !== "production" && statusCode===500
+        ...(process.env.NODE_ENV !== "production" && statusCode===500
             ? {stack:err.stack}
             :{}),
     });

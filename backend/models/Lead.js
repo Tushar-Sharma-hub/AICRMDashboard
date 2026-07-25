@@ -3,6 +3,10 @@ import mongoose from "mongoose";
 export const LEAD_STATUSES = ["New", "Qualified", "Proposal", "Won", "Lost"];
 export const LEAD_PRIORITIES = ["Low", "Medium", "High"];
 
+// An index in MongoDB is a data structure that stores the values of one or more fields to make queries faster. 
+// Instead of scanning every document, MongoDB uses the index to directly locate matching records, similar to an index in a book. 
+// For example, if email has index: true, then User.findOne({ email: 'tushar@gmail.com' }) quickly finds the user without checking every document.
+
 const leadSchema = new mongoose.Schema(
   {
     owner: {

@@ -65,5 +65,10 @@ contactSchema.index({
   email: "text",
   company: "text",
 });
+//With the use to this =>
+//Contact.find({
+ // $text: { $search: "Google" }
+//});
+//We can search the data from the contacts using MongoDB's text search.
 
 export const Contact = mongoose.model("Contact", contactSchema);

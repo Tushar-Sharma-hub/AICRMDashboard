@@ -4,7 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { connectDB } from "./config/db.js";
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
-
+import authRoutes from "./routes/auth.routes.js";
 const app = express();
 
 //middlewares
@@ -24,7 +24,7 @@ if(process.env.NODE_ENV !== "production"){
 app.get("/api/health",(req,res)=>{
     res.json({success:true,status:"ok",service:"TTP CRM API"});
 });
-
+app.use("/api/auth",authRoutes);
 //Error Handling
 app.use(notFound);
 app.use(errorHandler);

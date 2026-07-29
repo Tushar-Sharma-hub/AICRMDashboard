@@ -28,6 +28,6 @@ export const protect = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, "Not authorized, user no longer exists");
   }
 
-  req.user = user;
+  req.user = user; // attach the user to the request so that other routes can use it.
   next();
 });

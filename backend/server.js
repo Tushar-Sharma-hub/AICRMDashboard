@@ -7,6 +7,9 @@ import { notFound, errorHandler } from "./middleware/error.middleware.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import leadRoutes from "./routes/lead.routes.js";
+import contactRoutes from "./routes/contact.routes.js";
+import taskRoutes from "./routes/task.routes.js";
+import noteRoutes from "./routes/note.routes.js";
 
 const app = express();
 
@@ -27,8 +30,12 @@ if(process.env.NODE_ENV !== "production"){
 app.get("/api/health",(req,res)=>{
     res.json({success:true,status:"ok",service:"TTP CRM API"});
 });
+
 app.use("/api/auth",authRoutes);
 app.use("/api/leads",leadRoutes);
+app.use("/api/contacts",contactRoutes);
+app.use("/api/tasks",taskRoutes);
+app.use("/api/notes",noteRoutes);
 
 //Error Handling
 app.use(notFound);

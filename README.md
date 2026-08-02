@@ -42,20 +42,6 @@ AICRM helps sales teams manage leads, contacts, tasks, notes, and pipeline activ
   - Morgan logging
   - Google Gemini AI integration via `@google/genai`
 
-## Recruiter-friendly technical abilities
-
-This project demonstrates the ability to:
-
-- Build and maintain a full-stack SaaS application
-- Design RESTful APIs and secure server-side logic
-- Integrate cloud AI services into product workflows
-- Create responsive and interactive React UIs
-- Implement drag-and-drop interfaces for workflow applications
-- Handle asynchronous API communication and state updates
-- Build dashboards with charts, KPI cards, and analytics
-- Apply modern JavaScript, ES modules, and React best practices
-- Use Node.js with Express, MongoDB schema design, and authentication
-
 ## Local setup
 
 ### Backend

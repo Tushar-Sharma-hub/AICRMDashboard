@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { ApiError } from "../utils/ApiError.js";
 
 let client = null;
+const DEFAULT_MODEL = "gemini-2.0-flash";
 
 const getClient = () => {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -20,7 +21,15 @@ const getClient = () => {
   return client;
 };
 
-const MODEL = () => process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL = () => {
+  const configuredModel = process.env.GEMINI_MODEL?.trim();
+
+  if (!configuredModel) {
+    return DEFAULT_MODEL;
+  }
+
+  return configuredModel;
+};
 
 export const isAIConfigured = () => Boolean(process.env.GEMINI_API_KEY);
 
@@ -40,11 +49,17 @@ const generateJSON = async (prompt, schema) => {
 
     return JSON.parse(response.text);
   } catch (err) {
-    console.error("Gemini JSON error:", err?.message || err);
-    throw new ApiError(
-      502,
-      "AI request failed. Please try again in a moment."
-    );
+    const message = err?.message || String(err || "Unknown Gemini error");
+    console.error("Gemini JSON error:", message);
+
+    if (message.includes("quota") || message.includes("RESOURCE_EXHAUSTED")) {
+      throw new ApiError(
+        429,
+        "Gemini API quota has been exceeded. Please wait a bit or upgrade your API plan."
+      );
+    }
+
+    throw new ApiError(502, "AI request failed. Please try again in a moment.");
   }
 };
 
@@ -60,11 +75,17 @@ const generateText = async (prompt, temperature = 0.7) => {
 
     return response.text.trim();
   } catch (err) {
-    console.error("Gemini text error:", err?.message || err);
-    throw new ApiError(
-      502,
-      "AI request failed. Please try again in a moment."
-    );
+    const message = err?.message || String(err || "Unknown Gemini error");
+    console.error("Gemini text error:", message);
+
+    if (message.includes("quota") || message.includes("RESOURCE_EXHAUSTED")) {
+      throw new ApiError(
+        429,
+        "Gemini API quota has been exceeded. Please wait a bit or upgrade your API plan."
+      );
+    }
+
+    throw new ApiError(502, "AI request failed. Please try again in a moment.");
   }
 };
 

@@ -176,7 +176,7 @@ export const generateSalesInsights = async (pipelineStats) => {
 Pipeline snapshot (JSON):
 ${JSON.stringify(pipelineStats, null, 2)}
 
-Return JSON only.`;
+Return JSON only. healthScore must be an integer between 0 and 100 inclusive. If the computed score is outside that range, clamp it to 0 or 100. Do not use scientific notation, and do not add any text outside the JSON object.`;
 
   const schema = {
     type: "object",

@@ -2,7 +2,6 @@ import { GoogleGenAI } from "@google/genai";
 import { ApiError } from "../utils/ApiError.js";
 
 let client = null;
-const DEFAULT_MODEL = "gemini-2.0-flash";
 
 const getClient = () => {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -25,7 +24,10 @@ const MODEL = () => {
   const configuredModel = process.env.GEMINI_MODEL?.trim();
 
   if (!configuredModel) {
-    return DEFAULT_MODEL;
+    throw new ApiError(
+      503,
+      "Gemini model is not configured. Add GEMINI_MODEL to the backend .env file with a supported model."
+    );
   }
 
   return configuredModel;

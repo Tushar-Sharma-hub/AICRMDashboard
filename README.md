@@ -51,8 +51,8 @@ AICRM helps sales teams manage leads, contacts, tasks, notes, and pipeline activ
 3. Create a `.env` file with keys like:
    - `MONGO_URI`
    - `GEMINI_API_KEY`
-   - `GEMINI_MODEL` (optional, defaults to `gemini-2.5-flash`)
-   - `CLIENT_URL` (optional, default `http://localhost:5173`)
+   - `GEMINI_MODEL`
+   - `CLIENT_URL`
 4. `npm run dev`
 
 ### Frontend

@@ -6,6 +6,7 @@ import {
   generateLeadSummary,
   generateEmail,
   generateSalesInsights,
+  getConfiguredModels,
   isAIConfigured,
 } from "../services/ai.service.js";
 
@@ -27,10 +28,13 @@ const resolveLead = async (req) => {
 };
 
 export const aiStatus = asyncHandler(async (req, res) => {
+  const configuredModels = getConfiguredModels();
+
   res.json({
     success: true,
     configured: isAIConfigured(),
-    model: process.env.GEMINI_MODEL?.trim() || "gemini-2.0-flash",
+    model: configuredModels[0] || "gemini-3.5-flash",
+    fallbackModels: configuredModels.slice(1),
   });
 });
 

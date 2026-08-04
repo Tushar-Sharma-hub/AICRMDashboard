@@ -20,75 +20,110 @@ const getClient = () => {
   return client;
 };
 
-const MODEL = () => {
+const getModelCandidates = () => {
   const configuredModel = process.env.GEMINI_MODEL?.trim();
+  const configuredFallbacks = (process.env.GEMINI_FALLBACK_MODELS || "")
+    .split(",")
+    .map((model) => model.trim())
+    .filter(Boolean);
 
-  if (!configuredModel) {
-    throw new ApiError(
-      503,
-      "Gemini model is not configured. Add GEMINI_MODEL to the backend .env file with a supported model."
+  const models = [];
+
+  if (configuredModel) {
+    models.push(configuredModel);
+  }
+
+  for (const model of configuredFallbacks) {
+    if (!models.includes(model)) {
+      models.push(model);
+    }
+  }
+
+  if (models.length === 0) {
+    models.push(
+      "gemini-3.5-flash",
+      "gemini-3.6-flash",
+      "gemini-2.5-flash-lite",
+      "gemma-4"
     );
   }
 
-  return configuredModel;
+  return models;
 };
+
+export const getConfiguredModels = () => getModelCandidates();
 
 export const isAIConfigured = () => Boolean(process.env.GEMINI_API_KEY);
 
+const isQuotaOrLimitError = (message = "") =>
+  /quota|resource_exhausted|rate limit|429|limit exceeded/i.test(message);
+
 const generateJSON = async (prompt, schema) => {
   const ai = getClient();
+  const errors = [];
 
-  try {
-    const response = await ai.models.generateContent({
-      model: MODEL(),
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: schema,
-        temperature: 0.6,
-      },
-    });
+  for (const model of getModelCandidates()) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: schema,
+          temperature: 0.6,
+        },
+      });
 
-    return JSON.parse(response.text);
-  } catch (err) {
-    const message = err?.message || String(err || "Unknown Gemini error");
-    console.error("Gemini JSON error:", message);
-
-    if (message.includes("quota") || message.includes("RESOURCE_EXHAUSTED")) {
-      throw new ApiError(
-        429,
-        "Gemini API quota has been exceeded. Please wait a bit or upgrade your API plan."
-      );
+      return JSON.parse(response.text);
+    } catch (err) {
+      const message = err?.message || String(err || "Unknown Gemini error");
+      errors.push({ model, message });
+      console.error(`Gemini JSON error for ${model}:`, message);
     }
-
-    throw new ApiError(502, "AI request failed. Please try again in a moment.");
   }
+
+  const quotaError = errors.find(({ message }) => isQuotaOrLimitError(message));
+
+  if (quotaError) {
+    throw new ApiError(
+      429,
+      "Gemini API quota has been exceeded. Please wait a bit or upgrade your API plan."
+    );
+  }
+
+  throw new ApiError(502, "AI request failed. Please try again in a moment.");
 };
 
 const generateText = async (prompt, temperature = 0.7) => {
   const ai = getClient();
+  const errors = [];
 
-  try {
-    const response = await ai.models.generateContent({
-      model: MODEL(),
-      contents: prompt,
-      config: { temperature },
-    });
+  for (const model of getModelCandidates()) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: { temperature },
+      });
 
-    return response.text.trim();
-  } catch (err) {
-    const message = err?.message || String(err || "Unknown Gemini error");
-    console.error("Gemini text error:", message);
-
-    if (message.includes("quota") || message.includes("RESOURCE_EXHAUSTED")) {
-      throw new ApiError(
-        429,
-        "Gemini API quota has been exceeded. Please wait a bit or upgrade your API plan."
-      );
+      return response.text.trim();
+    } catch (err) {
+      const message = err?.message || String(err || "Unknown Gemini error");
+      errors.push({ model, message });
+      console.error(`Gemini text error for ${model}:`, message);
     }
-
-    throw new ApiError(502, "AI request failed. Please try again in a moment.");
   }
+
+  const quotaError = errors.find(({ message }) => isQuotaOrLimitError(message));
+
+  if (quotaError) {
+    throw new ApiError(
+      429,
+      "Gemini API quota has been exceeded. Please wait a bit or upgrade your API plan."
+    );
+  }
+
+  throw new ApiError(502, "AI request failed. Please try again in a moment.");
 };
 
 export const generateLeadSummary = async (lead) => {

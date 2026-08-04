@@ -1,7 +1,7 @@
 {
   "name": "ttp-crm-backend",
   "version": "1.0.0",
-  "description": "TTP CRM - AI-powered SaaS CRM backend (Express + MongoDB + Gemini)",
+  "description": "AICRM - AI-powered SaaS CRM backend (Express + MongoDB + Gemini)",
   "main": "server.js",
   "type": "module",
   "scripts": {

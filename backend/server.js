@@ -30,7 +30,7 @@ if(process.env.NODE_ENV !== "production"){
 
 //Routes
 app.get("/api/health",(req,res)=>{
-    res.json({success:true,status:"ok",service:"TTP CRM API"});
+    res.json({success:true,status:"ok",service:"AICRM API"});
 });
 
 app.use("/api/auth",authRoutes);
@@ -52,7 +52,7 @@ const start = async() =>{
     try{
         await connectDB();
         app.listen(PORT,()=>
-            console.log(`TTP CRM API is running on http://localhost:${PORT}`)
+            console.log(`AICRM API is running on http://localhost:${PORT}`)
         );
     }
     catch(error){

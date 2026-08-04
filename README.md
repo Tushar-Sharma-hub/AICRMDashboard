@@ -1,5 +1,8 @@
 # AICRM
 
+- **Live Frontend:** [https://aicrm-gray.vercel.app/](https://aicrm-gray.vercel.app/)
+- **Live Backend API:** [https://aicrm-backend-46c2.onrender.com](https://aicrm-backend-46c2.onrender.com)
+
 AICRM is a full-stack AI-enhanced CRM application built as a modern SaaS sales productivity tool. It combines a React + Vite frontend with an Express + MongoDB backend, plus AI-powered lead summaries, email drafting, and sales insights using Google Gemini.
 
 ## What this project does

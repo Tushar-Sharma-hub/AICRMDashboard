@@ -64,6 +64,20 @@ AICRM helps sales teams manage leads, contacts, tasks, notes, and pipeline activ
 2. `npm install`
 3. `npm run dev`
 
+## API response handling
+
+The backend uses standard HTTP status codes to make API responses predictable.
+
+- `200 OK` - Successful read or update operation
+- `201 Created` - Resource created successfully
+- `400 Bad Request` - Invalid or missing input
+- `401 Unauthorized` - Authentication is required or invalid
+- `403 Forbidden` - Authenticated user does not have permission
+- `404 Not Found` - Requested resource does not exist
+- `500 Internal Server Error` - Unexpected server-side error
+
+Error responses include a message describing what went wrong so the frontend can handle failures appropriately.
+
 ## Notes
 
 - The backend exposes authenticated routes under `/api/*`.

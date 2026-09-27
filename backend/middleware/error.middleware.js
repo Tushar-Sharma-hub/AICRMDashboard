@@ -29,6 +29,7 @@ export const errorHandler = (err,req,res,next) => {
     if(process.env.NODE_ENV !== "production" && statusCode===500){
         console.error(err);
     }
+    // Return a consistent JSON structure for all API errors.
     res.status(statusCode).json({
         success: false,
         message,

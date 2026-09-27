@@ -3,6 +3,7 @@ import { User } from "../models/User.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 
+// Verify the authenticated user before allowing access to protected routes.
 export const protect = asyncHandler(async (req, res, next) => {
   let token;
   const header = req.headers.authorization;
